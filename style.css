@@ -1,0 +1,21 @@
+/* Custom styles */
+body {
+    font-family: 'Sarabun', 'Inter', sans-serif;
+    background-color: #f0f2f5;
+}
+
+/* Style for the active navigation link */
+.nav-link.active {
+    color: #ffffff;
+    background-color: #1d4ed8;
+}
+
+/* Simple transition for page content */
+.page-content {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

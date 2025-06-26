@@ -1,9 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Portfolio</title>
-  </head>
-  <body></body>
+    <!--
+        เรียกใช้งาน Tailwind CSS จาก CDN (Content Delivery Network)
+        เป็นเครื่องมือที่ช่วยในการออกแบบและจัดสไตล์หน้าเว็บ
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-gray-800">
+
+    <!-- Header and Navigation Bar -->
+    <header class="bg-blue-600 shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-center items-center">
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <!-- Navigation Links -->
+                    <a href="#home" class="nav-link text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm sm:text-base font-medium transition active">หน้าแรก</a>
+                    <a href="#experience" class="nav-link text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm sm:text-base font-medium transition">ประสบการณ์</a>
+                    <a href="#contact" class="nav-link text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm sm:text-base font-medium transition">ติดต่อ</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Page content will be loaded here -->
+        <div id="page-container"></div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pageContainer = document.getElementById('page-container');
+
+            // Function to load page content dynamically
+            async function loadPage(pageName) {
+                try {
+                    const response = await fetch(`${pageName}.html`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const content = await response.text();
+                    pageContainer.innerHTML = content;
+                } catch (error) {
+                    console.error('Error loading page:', error);
+                    pageContainer.innerHTML = `<p class="text-red-500 text-center">Failed to load content for ${pageName}.</p>`;
+                }
+            }
+
+            // Function to handle navigation
+            function navigateTo(hash) {
+                let pageName = hash.substring(1); // Remove '#'
+                if (!pageName) {
+                    pageName = 'home'; // Default to home if hash is empty
+                }
+
+                // Load content for the active page
+                loadPage(pageName);
+
+                // Update active state in navbar
+                navLinks.forEach(link => {
+                    if (link.getAttribute('href') === hash) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            // Add click event listener to all nav links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default anchor behavior
+                    const targetHash = this.getAttribute('href');
+                    navigateTo(targetHash);
+                    // Update URL hash without reloading the page
+                    history.pushState(null, null, targetHash);
+                });
+            });
+
+            // Handle browser back/forward buttons
+            window.addEventListener('popstate', function() {
+                navigateTo(location.hash);
+            });
+
+            // Initial page load based on URL hash
+            navigateTo(location.hash);
+        });
+    </script>
+</body>
 </html>
